@@ -130,7 +130,7 @@ def classify(model, imagepath):
     X = np.expand_dims(X, axis=0)
 
     images = np.vstack([X])
-    classes = model.predict(images, batch_size=8)
+    classes = model.predict(images, batch_size=1)
     print(classes[0])
     if classes[0]<0.5:
         return "male"
@@ -140,8 +140,8 @@ def classify(model, imagepath):
 
 def plot_average(datasets, m_avg, f_avg):
     genders = {
-        'CASIA-Webface': (m_avg, f_avg),
-        'SFace-60': (m_avg, f_avg)
+        'male': (0, m_avg),
+        'female': (0, f_avg)
     }
 
     x = np.arange(len(datasets))  # the label locations
@@ -160,7 +160,7 @@ def plot_average(datasets, m_avg, f_avg):
     fig.suptitle('Dataset Gender Distribution', fontsize=20)
     ax.set_ylabel('Percentage Identified')
     ax.set_title('Gender Attributes')
-    ax.set_xticks(x + width, genders)
+    ax.set_xticks(x + width, datasets)
     ax.legend(loc='upper left', ncols=2)
     ax.set_ylim(0, 100)
 
@@ -170,27 +170,26 @@ if __name__ == "__main__" :
     males = 0
     females = 0
     model = data_gen()
-    datasets = ("Baseline", "SFace-60")
+    datasets = ("male", "female")
     i = 0
-    for subfolder in os.listdir("../Dataset/Test/"):
-        subname = os.path.join("../Dataset/Test/", subfolder)
-        for filename in os.listdir(subname):
-            f = os.path.join(subname, filename)
+    flag = 0
+
+    femalepath = "../Dataset/Validation/Female"
+    malepath = "../Dataset/Validation/Male"
+    for i in range(2):
+        if i < 1:
+            path = femalepath
+        if i == 1:
+            path = malepath
+        for n, filename in enumerate(os.listdir(path)):
+            if n < 50:
+                f = os.path.join(path, filename)
+                print(f)
             # checking if it is a file
-            if os.path.isfile(f):
-                if i < 50:
-                    print(f)
+                if os.path.isfile(f):
                     gender = classify(model, f)
                     if gender == "male":
                         males += 1
-                        i += 1
                     elif gender == "female":
                         females += 1
-                        i += 1
-                    pass
-                elif i == 51:
-                    print("done")
-            else:
-                print("not a good path to images")
-                pass
     plot_average(datasets, males, females)
