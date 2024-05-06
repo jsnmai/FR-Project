@@ -88,8 +88,6 @@ def data_gen():
     model.add(BatchNormalization())
     model.add(MaxPooling2D(2,strides=(2,2), padding='same'))
 
-
-
     # Add new layers
     model.add(Flatten())
     model.add(Dense(FC , activation='relu'))
@@ -136,60 +134,41 @@ def classify(model, imagepath):
         return "male"
     else:
         return "female"
-    # plt.imshow(imge)
 
-def plot_average(datasets, m_avg, f_avg):
-    genders = {
-        'male': (0, m_avg),
-        'female': (0, f_avg)
-    }
+def plot_data(male_count, female_coumt):
+    male_percent = male_count / (male_count + female_coumt) * 100
+    female_percent = female_coumt / (male_count + female_coumt) * 100
 
-    x = np.arange(len(datasets))  # the label locations
-    width = 0.25  # the width of the bars
-    multiplier = 0
-
-    fig, ax = plt.subplots(layout='constrained')
-
-    for attribute, measurement in genders.items():
-        offset = width * multiplier
-        rects = ax.bar(x + offset, measurement, width, label=attribute)
-        ax.bar_label(rects, padding=2)
-        multiplier += 1
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    fig.suptitle('Dataset Gender Distribution', fontsize=20)
-    ax.set_ylabel('Percentage Identified')
-    ax.set_title('Gender Attributes')
-    ax.set_xticks(x + width, datasets)
-    ax.legend(loc='upper left', ncols=2)
-    ax.set_ylim(0, 100)
+    labels = ['Classifications']
+    fig, graph = plt.subplots(figsize=(10, 2))  
+    graph.barh(labels, [male_percent], label='Male', color='blue')
+    graph.barh(labels, [female_percent], left=[male_percent], label='Female', color='pink')
+    
+    graph.set_xlabel('Percentage (%)')
+    graph.set_title('Gender Classification Percentages')
+    plt.xlim(0, 100)
+    graph.legend()
 
     plt.show()
 
 if __name__ == "__main__" :
-    males = 0
-    females = 0
     model = data_gen()
-    datasets = ("male", "female")
-    i = 0
-    flag = 0
+    paths = ['Dataset/Validation/Male', 'Dataset/Validation/Female']
+    male_count = 0
+    female_count = 0
 
-    femalepath = "../Dataset/Validation/Female"
-    malepath = "../Dataset/Validation/Male"
-    for i in range(2):
-        if i < 1:
-            path = femalepath
-        if i == 1:
-            path = malepath
-        for n, filename in enumerate(os.listdir(path)):
-            if n < 50:
-                f = os.path.join(path, filename)
-                print(f)
-            # checking if it is a file
-                if os.path.isfile(f):
-                    gender = classify(model, f)
-                    if gender == "male":
-                        males += 1
-                    elif gender == "female":
-                        females += 1
-    plot_average(datasets, males, females)
+    for path in paths:
+        image_count = 0
+        for file in os.listdir(path):
+            if image_count >= 50:  
+                break
+            image_path = os.path.join(path, file)
+            print(image_path)
+            result = classify(model, image_path)
+            if result == 'male':
+                male_count += 1
+            if result == 'female':
+                female_count += 1
+            image_count += 1
+
+    plot_data(male_count, female_count)
