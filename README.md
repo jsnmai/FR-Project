@@ -1,4 +1,4 @@
-# CS381 Final Presentation
+# CS381 Final Project: Bias and Diversity in Synthetic-based Face Recognition
 
 ### REQUIRED Additional Downloads
 #### Make sure all files are in the same working directory
