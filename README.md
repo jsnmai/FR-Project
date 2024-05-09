@@ -1,4 +1,4 @@
-# FR-Project
+# CS381 Final Presentation
 
 ### REQUIRED Additional Downloads
 #### Make sure all files are in the same working directory
