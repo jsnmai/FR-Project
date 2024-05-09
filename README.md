@@ -9,6 +9,6 @@ Download classifier model: https://www.kaggle.com/code/yasserhessein/gender-clas
 
 **rename file to VGG16.h5 to be compatible with code.
 
-## Accompanying slideshow presentation
+#### Accompanying slideshow presentation
 https://docs.google.com/presentation/d/1jUgP93jEagG-z-ABfBUywuHGfDWwdU1GRdJdx4VJ6AI/edit?usp=sharing
 
